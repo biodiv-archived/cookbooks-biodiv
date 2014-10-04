@@ -1,0 +1,80 @@
+dataSource.username = "<%= node['biodiv']['database-user'] %>"
+dataSource.password = "<%= node['biodiv']['database-password'] %>"
+
+
+grails.plugin.springsecurity.ui.register.postRegisterUrl  = "http://<%= node.biodiv.servername %>/<%= node.biodiv.appname %>/user/myprofile" // use defaultTargetUrl if not set
+NamesIndexerService.FILENAME = "<%= node.biodiv.appname %>_tstLookup.dat";
+
+
+speciesPortal {
+	observations { filePicker.key = 'AXCVl73JWSwe7mTPb2kXdz' }
+}
+
+environments {
+	pamba {
+		servername = "<%= node.biodiv.servername %>"
+		appName = "<%= node.biodiv.appname %>"
+		dataSource { url = "jdbc:postgresql://127.0.0.1:5432/<%= node['biodiv']['database'] %>" }
+		grails.serverURL = "http://<%= node.biodiv.servername %>/${appName}"
+
+		speciesPortal {
+			app.rootDir = "<%= node['biodiv']['data'] %>"
+			data.rootDir = "<%= node['biodiv']['data'] %>/data"
+			names.parser.serverURL = "127.0.0.1"
+
+			resources {
+				rootDir = "<%= node['biodiv']['data'] %>/img"
+				serverURL = "http://<%= node.biodiv.servername %>/${appName}/img"
+			}
+			nameSearch.indexStore = "<%= node['biodiv']['data'] %>/data/names"
+			observations {
+				rootDir = "<%= node['biodiv']['data'] %>/observations"
+				serverURL = "http://<%= node.biodiv.servername %>/${appName}/observations"
+				//filePicker.key = 'Az2MIh1LOQC2OMDowCnioz'
+			}
+			userGroups {
+				rootDir = "<%= node['biodiv']['data'] %>/userGroups"
+				serverURL = "http://<%= node.biodiv.servername %>/${appName}/userGroups"
+			}
+			users {
+				rootDir = "<%= node['biodiv']['data'] %>/users"
+				serverURL = "http://<%= node.biodiv.servername %>/${appName}/users"
+			}
+
+			content{
+				rootDir = "<%= node['biodiv']['data'] %>/content"
+				serverURL = "http://<%= node.biodiv.servername %>/${appName}/content"
+			}
+			maps { serverURL = "http://<%= node.biodiv.servername %>/${appName}/maps" }
+			usersResource {
+				rootDir = "<%= node['biodiv']['data'] %>/usersRes"
+				serverURL = "http://<%= node.biodiv.servername %>/${appName}/usersRes"
+			}
+
+			search.serverURL="http://<%= node.biodiv.servername %>:8080/solr"
+			grails {
+				mail {
+					host = "<%= node.biodiv.smtphost %>"
+					port = <%= node.biodiv.smtpport %>
+				}
+			}
+		}
+
+		ibp.domain="<%= node.biodiv.servername %>"
+		wgp.domain="thewesternghats.<%= node.biodiv.servername %>"
+
+		ckeditor {
+			upload {
+				baseurl = "/newsletters"
+				basedir = "${speciesPortal.app.rootDir}/newsletters/"
+
+				image.browser = true
+				image.upload = true
+				image.allowed = ['jpg', 'gif', 'jpeg', 'png']
+				image.denied = []
+			}
+		}
+		log4jConsoleLogLevel = Priority.DEBUG
+	}
+}
+
