@@ -77,15 +77,26 @@ apt_package "mailutils" do
   action :install
 end
 
+# create includes folder
+directory "#{node['nginx']['dir']}/include.d/" do
+  owner node.nginx.user
+  group node.nginx.group
+  action :create
+end
+
 #  setup nginx biodiv conf
-template "#{node['nginx']['dir']}/sites-enabled/#{node.biodiv.appname}" do
+template "#{node['nginx']['dir']}/include.d/#{node.biodiv.appname}" do
   source "nginx-biodiv.erb"
+  owner node.nginx.user
+  group node.nginx.group
   notifies :restart, resources(:service => "nginx"), :immediately
 end
 
 #  setup nginx main conf
 template "#{node['nginx']['dir']}/sites-enabled/#{node.biodiv.appname}-main.conf" do
   source "nginx-wikwio.erb"
+  owner node.nginx.user
+  group node.nginx.group
   notifies :restart, resources(:service => "nginx"), :immediately
 end
 

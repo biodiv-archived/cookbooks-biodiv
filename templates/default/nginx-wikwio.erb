@@ -7,7 +7,7 @@ server {
 server {
 	listen   80 default; 
 	server_name <%= node.biodiv.servername %> www.<%= node.biodiv.servername %>;
-	include <%= node.nginx.dir %>/sites-enabled/<%= node.biodiv.appname %>;
+	include <%= node.nginx.dir %>/include.d/<%= node.biodiv.appname %>;
 
 #	for home page
 	location = / {
