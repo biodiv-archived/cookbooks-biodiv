@@ -26,7 +26,7 @@ end
 postgresql_database 'create postgis extension' do
   connection      postgresql_connection_info
   database_name node.biodiv.database
-  sql "CREATE EXTENSION if not exists postgis; CREATE EXTENSION if not exists postgis_topology; CREATE EXTENSION if not exists dblink;create or replace view observation_locations as SELECT obs.id, 'observation:'::text || obs.id AS source, r.name AS species_name, obs.topology, obs.last_revised FROM observation obs, recommendation r WHERE obs.max_voted_reco_id = r.id AND obs.is_deleted = false AND obs.is_showable = true;"
+  sql "CREATE EXTENSION if not exists postgis; CREATE EXTENSION if not exists postgis_topology; CREATE EXTENSION if not exists dblink;"
   action :nothing
 end
 
