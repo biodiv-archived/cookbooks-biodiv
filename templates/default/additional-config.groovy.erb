@@ -7,7 +7,12 @@ NamesIndexerService.FILENAME = "<%= node.biodiv.appname %>_tstLookup.dat";
 
 
 speciesPortal {
-	observations { filePicker.key = 'AXCVl73JWSwe7mTPb2kXdz' }
+	observations { filePicker.key = "<%= node.biodiv.filePickerKey %>" }
+	app {
+		twitterUrl = "<%= node.biodiv.twitterUrl %>"
+        facebookUrl = "<%= node.biodiv.facebookUrl %>"
+        feedbackFormUrl = "<%= node.biodiv.feedbackFormUrl %>"		
+	}
 }
 
 environments {
@@ -57,6 +62,13 @@ environments {
 					host = "<%= node.biodiv.smtphost %>"
 					port = <%= node.biodiv.smtpport %>
 				}
+			}
+			ibp {
+				facebook {
+					appId=  "<%= node.biodiv.facebookAppId %>"
+					secret=  "<%= node.biodiv.facebookSecret %>"
+				}
+				supportEmail = "<%= node.biodiv.supportEmail %>"
 			}
 		}
 
