@@ -70,6 +70,10 @@ environments {
 				}
 				supportEmail = "<%= node.biodiv.supportEmail %>"
 			}
+			ibpMapDatabase {
+				username = "<%= node.geoserver.database-user %>"
+				password = "<%= node.geoserver.database-password %>"
+			}
 		}
 
 		ibp.domain="<%= node.biodiv.servername %>"
