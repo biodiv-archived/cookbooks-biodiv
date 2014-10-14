@@ -49,7 +49,7 @@ location ~ (^|/)\. {
 	return 403;
 }
 
-location ~* /<%= node.biodiv.appname %>/(static/templates|logo|t|observations|newsletters|group-themes|users|userGroups|group_icons|content|img|docs) {
+location ~* /<%= node.biodiv.appname %>/(static/templates|logo|t|observations|newsletters|group-themes|users|userGroups|group_icons|content|img|docs|maps) {
 	root <%= node.biodiv.data %>/..;
 }
 
