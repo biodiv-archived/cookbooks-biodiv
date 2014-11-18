@@ -21,11 +21,18 @@ environments {
 		appName = "<%= node.biodiv.appname %>"
 		dataSource { url = "jdbc:postgresql://127.0.0.1:5432/<%= node['biodiv']['database'] %>" }
 		grails.serverURL = "http://<%= node.biodiv.servername %>/${appName}"
+		
+		grails.plugin.springsecurity.facebook.apiKey="Invalid"
+       	grails.plugin.springsecurity.facebook.appId="<%= node.biodiv.facebookAppId %>"
+       	grails.plugin.springsecurity.facebook.secret="<%= node.biodiv.facebookSecret %>"
 
 		speciesPortal {
 			app.rootDir = "<%= node['biodiv']['data'] %>"
 			data.rootDir = "<%= node['biodiv']['data'] %>/data"
 			names.parser.serverURL = "127.0.0.1"
+			
+			localeLanguages = [['name':'English','code':'eng', 'twoletter':'en'], ['name':'French','code':'fre', 'twoletter':'fr']]
+           	hideLanguages = false
 
 			resources {
 				rootDir = "<%= node['biodiv']['data'] %>/img"
