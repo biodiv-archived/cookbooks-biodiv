@@ -182,7 +182,7 @@ bash "compile_biodiv" do
   cd #{node.biodiv.extracted}
   yes | #{grailsCmd} upgrade
   export BIODIV_CONFIG_LOCATION=#{additionalConfig}
-  yes | #{grailsCmd} -Dgrails.env=pamba war 
+  yes | #{grailsCmd} -Dgrails.env=kk war 
   chmod +r #{node.biodiv.war}
   EOH
 

@@ -16,7 +16,7 @@ speciesPortal {
 }
 
 environments {
-	pamba {
+	kk {
 		servername = "<%= node.biodiv.servername %>"
 		appName = "<%= node.biodiv.appname %>"
 		dataSource { url = "jdbc:postgresql://127.0.0.1:5432/<%= node['biodiv']['database'] %>" }
@@ -84,7 +84,7 @@ environments {
 		}
 
 		ibp.domain="<%= node.biodiv.servername %>"
-		wgp.domain="thewesternghats.<%= node.biodiv.servername %>"
+		wgp.domain="<%= node.biodiv.servername %>"
 
 		ckeditor {
 			upload {
