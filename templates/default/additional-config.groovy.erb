@@ -32,7 +32,7 @@ environments {
 			names.parser.serverURL = "127.0.0.1"
 			
 			localeLanguages = [['name':'English','code':'eng', 'twoletter':'en'], ['name':'French','code':'fre', 'twoletter':'fr']]
-           	hideLanguages = false
+           	hideLanguages = <%= node.biodiv.hideLanguages %>
 
 			resources {
 				rootDir = "<%= node['biodiv']['data'] %>/img"
