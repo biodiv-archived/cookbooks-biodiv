@@ -126,6 +126,13 @@ bash 'unpack biodiv' do
   code <<-EOH
   cd "#{node.biodiv.directory}"
   unzip  #{node.biodiv.download}
+  expectedFolderName=`basename #{node.biodiv.extracted} | sed 's/.zip$//'`
+  folderName=`basename #{node.biodiv.download} | sed 's/.zip$//'`
+  
+  if [ "$folderName" != "$expectedFolderName" ]; then
+      mv "$folderName" "$expectedFolderName"
+  fi
+  
   EOH
   not_if "test -d #{node.biodiv.extracted}"
   notifies :create, "template[#{additionalConfig}]",:immediately
@@ -182,7 +189,7 @@ bash "compile_biodiv" do
   cd #{node.biodiv.extracted}
   yes | #{grailsCmd} upgrade
   export BIODIV_CONFIG_LOCATION=#{additionalConfig}
-  yes | #{grailsCmd} -Dgrails.env=kk war 
+  yes | #{grailsCmd} -Dgrails.env=kk war  #{node.biodiv.war}
   chmod +r #{node.biodiv.war}
   EOH
 
