@@ -39,8 +39,8 @@ server {
 
 	}
 
-	location ~* ^/(species|observation|activity|activityFeed|SUser|user|page|pages|requestMembership|joinUs|leaveUs|inviteMembers|login|logout|register|static|group|j_spring_security_logout|recommendation|comment|newsletter|edit|emailConfirmation|search|checklist|jcaptcha|openId|data|chart|curation|resource|rateable|rating|document|project|UFile|direction|biodivAdmin|action|taxon|featured|confirm|api|oauth|map|bbp)(.*)$ { 
-		rewrite ^/(species|observation|activity|activityFeed|SUser|user|page|pages|requestMembership|joinUs|leaveUs|inviteMembers|login|logout|register|static|group|j_spring_security_logout|recommendation|comment|newsletter|edit|emailConfirmation|search|checklist|jcaptcha|openId|data|chart|curation|resource|rateable|rating|document|project|UFile|direction|biodivAdmin|action|taxon|featured|confirm|api|oauth|map|bbp)(.*)$ /<%= node.biodiv.appname %>/$1$2 break;
+	location ~* ^/(species|observation|activity|activityFeed|SUser|user|page|pages|requestMembership|joinUs|leaveUs|inviteMembers|login|logout|register|static|group|j_spring_security_logout|recommendation|comment|newsletter|edit|emailConfirmation|search|checklist|jcaptcha|openId|data|chart|curation|resource|rateable|rating|document|project|UFile|direction|biodivAdmin|action|taxon|featured|confirm|api|oauth|map|bbp|discussion)(.*)$ { 
+		rewrite ^/(species|observation|activity|activityFeed|SUser|user|page|pages|requestMembership|joinUs|leaveUs|inviteMembers|login|logout|register|static|group|j_spring_security_logout|recommendation|comment|newsletter|edit|emailConfirmation|search|checklist|jcaptcha|openId|data|chart|curation|resource|rateable|rating|document|project|UFile|direction|biodivAdmin|action|taxon|featured|confirm|api|oauth|map|bbp|discussion)(.*)$ /<%= node.biodiv.appname %>/$1$2 break;
 		proxy_pass http://<%= node.biodiv.servername %>:8080;
 		proxy_redirect http://<%= node.biodiv.servername %>:8080/<%= node.biodiv.appname %>/ /;
 		proxy_redirect http://<%= node.biodiv.servername %>:8080/ /;
