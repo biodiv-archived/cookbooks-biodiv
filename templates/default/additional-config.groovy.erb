@@ -81,7 +81,57 @@ environments {
 				username = "<%= node['biodiv']['ibp-database-user'] %>"
 				password = "<%= node['biodiv']['ibp-database-password'] %>"
 			}
+		} // speciesPortal  closed
+
+
+		// Added by sathish on 3rd November 
+
+	grails{
+		plugin{
+			springsecurity{
+				rest{
+					oauth{
+						frontendCallbackUrl{
+							String tokenValue -> "<%= node.biodiv.servername %>/login/authSuccess?token=${tokenValue}"
+						}
+						google {
+				    	  client = species.auth.Google2Client
+						  key='<%= node["oauth"]["google"]["key"] %>'
+				          secret = '<%= node["oauth"]["google"]["secret"] %>'
+				          scope = org.pac4j.oauth.client.Google2Client.Google2Scope.EMAIL_AND_PROFILE
+				          defaultRoles = ['ROLE_USER', 'ROLE_GOOGLE']
+				        }
+				        facebook {
+					      client = species.auth.FacebookClient
+				          key = '<%= node["oauth"]["facebook"]["key"] %>'
+				          secret = '<%= node["oauth"]["google"]["secret"] %>'
+				          scope = "email,user_about_me,user_location,user_activities,user_hometown,manage_notifications,user_website,publish_stream"
+				          fields = 'id,name,username,email'
+				          defaultRoles = ['ROLE_USER', 'ROLE_FACEBOOK']
+						}
+					}
+				}
+			}
+		}	
+	}
+	def appName = grails.util.Metadata.current.'app.name'
+	def baseURL = grails.serverURL.replace('/biodiv','')
+	oauth {
+		debug = true
+		providers {
+			// for Google OAuth 2.0         
+			google {
+				api = "org.grails.plugin.springsecurity.oauth.GoogleApi20"
+				key = '<%= node["oauth"]["google"]["key"] %>'
+				secret = '<%= node["oauth"]["google"]["secret"] %>'
+				successUri = '/oauth/google/success'
+				failureUri = '/oauth/google/failure'
+				callback = "<%= node.biodiv.servername %>/oauth/google/callback"
+				scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
+			}
 		}
+	}
+	
 
 		ibp.domain="<%= node.biodiv.servername %>"
 		//wgp.domain="<%= node.biodiv.servername %>"
