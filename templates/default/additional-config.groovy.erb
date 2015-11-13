@@ -92,7 +92,7 @@ environments {
 				rest{
 					oauth{
 						frontendCallbackUrl{
-							String tokenValue -> "<%= node.biodiv.servername %>/login/authSuccess?token=${tokenValue}"
+							String tokenValue -> "http://<%= node.biodiv.servername %>/login/authSuccess?token=${tokenValue}"
 						}
 						google {
 				    	  client = species.auth.Google2Client
@@ -126,7 +126,7 @@ environments {
 				secret = '<%= node["oauth"]["google"]["secret"] %>'
 				successUri = '/oauth/google/success'
 				failureUri = '/oauth/google/failure'
-				callback = "<%= node.biodiv.servername %>/oauth/google/callback"
+				callback = "http://<%= node.biodiv.servername %>/oauth/google/callback"
 				scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
 			}
 		}
