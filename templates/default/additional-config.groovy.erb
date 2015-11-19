@@ -91,9 +91,7 @@ environments {
 			springsecurity{
 				rest{
 					oauth{
-						frontendCallbackUrl{
-							String tokenValue -> "http://<%= node.biodiv.servername %>/login/authSuccess?token=${tokenValue}"
-						}
+						frontendCallbackUrl = { String tokenValue -> "http://<%= node.biodiv.servername %>/login/authSuccess?token=${tokenValue}" }
 						google {
 				    	  client = species.auth.Google2Client
 						  key='<%= node["oauth"]["google"]["key"] %>'
