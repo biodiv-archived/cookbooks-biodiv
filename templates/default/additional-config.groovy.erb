@@ -31,7 +31,7 @@ environments {
 			data.rootDir = "<%= node['biodiv']['data'] %>/data"
 			names.parser.serverURL = "127.0.0.1"
 			
-			localeLanguages = [['name':'English','code':'eng', 'twoletter':'en'], ['name':'French','code':'fre', 'twoletter':'fr']]
+			localeLanguages = [['id':123,name':'English','code':'eng', 'twoletter':'en'], ['id':137,name':'French','code':'fre', 'twoletter':'fr']]
            	hideLanguages = <%= node.biodiv.hideLanguages %>
 
 			resources {
@@ -126,7 +126,7 @@ environments {
 				secret = '<%= node["oauth"]["google"]["secret"] %>'
 				successUri = '/oauth/google/success'
 				failureUri = '/oauth/google/failure'
-				callback = "http://<%= node.biodiv.servername %>/oauth/google/callback"
+				callback = "${baseURL}/oauth/google/callback"
 				scope = 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
 			}
 		}
