@@ -34,6 +34,11 @@ environments {
 			localeLanguages = [['id':123,'name':'English','code':'eng', 'twoletter':'en'], ['id':137,'name':'French','code':'fre', 'twoletter':'fr']]
            	hideLanguages = <%= node.biodiv.hideLanguages %>
 
+           	mobileAppVersion{
+                andriod="<%= node.biodiv.androidVersion %>"
+                ios="<%= node.biodiv.iosVersion %>"
+            }
+			
 			resources {
 				rootDir = "<%= node['biodiv']['data'] %>/img"
 				serverURL = "http://<%= node.biodiv.servername %>/${appName}/img"
@@ -42,6 +47,7 @@ environments {
 			observations {
 				rootDir = "<%= node['biodiv']['data'] %>/observations"
 				serverURL = "http://<%= node.biodiv.servername %>/${appName}/observations"
+				observationDownloadDir = "<%= node['biodiv']['data'] %>/app-conf/data/datarep/downloads/observations"
 				//filePicker.key = 'Az2MIh1LOQC2OMDowCnioz'
 			}
 			userGroups {
