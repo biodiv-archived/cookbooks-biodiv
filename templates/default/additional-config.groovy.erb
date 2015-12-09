@@ -31,9 +31,14 @@ environments {
 			data.rootDir = "<%= node['biodiv']['data'] %>/data"
 			names.parser.serverURL = "127.0.0.1"
 			
-			localeLanguages = [['id':123,name':'English','code':'eng', 'twoletter':'en'], ['id':137,name':'French','code':'fre', 'twoletter':'fr']]
+			localeLanguages = [['id':123,'name':'English','code':'eng', 'twoletter':'en'], ['id':137,'name':'French','code':'fre', 'twoletter':'fr']]
            	hideLanguages = <%= node.biodiv.hideLanguages %>
 
+           	mobileAppVersion{
+                andriod="<%= node.biodiv.androidVersion %>"
+                ios="<%= node.biodiv.iosVersion %>"
+            }
+			
 			resources {
 				rootDir = "<%= node['biodiv']['data'] %>/img"
 				serverURL = "http://<%= node.biodiv.servername %>/${appName}/img"
@@ -42,6 +47,7 @@ environments {
 			observations {
 				rootDir = "<%= node['biodiv']['data'] %>/observations"
 				serverURL = "http://<%= node.biodiv.servername %>/${appName}/observations"
+				observationDownloadDir = "<%= node['biodiv']['data'] %>/app-conf/data/datarep/downloads/observations"
 				//filePicker.key = 'Az2MIh1LOQC2OMDowCnioz'
 			}
 			userGroups {
@@ -91,9 +97,7 @@ environments {
 			springsecurity{
 				rest{
 					oauth{
-						frontendCallbackUrl{
-							String tokenValue -> "http://<%= node.biodiv.servername %>/login/authSuccess?token=${tokenValue}"
-						}
+						frontendCallbackUrl = { String tokenValue -> "http://<%= node.biodiv.servername %>/login/authSuccess?token=${tokenValue}" }
 						google {
 				    	  client = species.auth.Google2Client
 						  key='<%= node["oauth"]["google"]["key"] %>'
