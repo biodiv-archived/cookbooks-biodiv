@@ -22,9 +22,9 @@ server {
 		proxy_set_header   Host $host;
 	}
 
-	location ~* ^/<%= node.biodiv.appname %>/(static|plugins|data|bootstrap|js|css|j_spring_security_check|j_spring_openid_security_check|images|j_spring_security_logout|.*/upload_resource|ck|ViewerJS)(.*)$  {
+	location ~* ^/<%= node.biodiv.appname %>/(static|plugins|data|bootstrap|js|css|j_spring_security_check|j_spring_openid_security_check|images|j_spring_security_logout|.*/upload_resource|ck|ViewerJS|assets)(.*)$  {
 
-		rewrite ^/<%= node.biodiv.appname %>/(static|plugins|data|bootstrap|js|css|j_spring_security_check|j_spring_openid_security_check|images|j_spring_security_logout|.*/upload_resource|ck|ViewerJS)(.*)$ /<%= node.biodiv.appname %>/$1$2 break;
+		rewrite ^/<%= node.biodiv.appname %>/(static|plugins|data|bootstrap|js|css|j_spring_security_check|j_spring_openid_security_check|images|j_spring_security_logout|.*/upload_resource|ck|ViewerJS|assets)(.*)$ /<%= node.biodiv.appname %>/$1$2 break;
 		proxy_pass http://<%= node.biodiv.servername %>:8080;
 		proxy_redirect   default;
 		proxy_set_header   Host $host;
