@@ -49,7 +49,7 @@ location ~ (^|/)\. {
 	return 403;
 }
 
-location ~* /<%= node.biodiv.appname %>/(static/templates|logo|t|observations|newsletters|group-themes|users|userGroups|group_icons|content|img|docs|maps) {
+location ~* ^/<%= node.biodiv.appname %>/(static/templates|logo|t|observations|newsletters|group-themes|users|userGroups|group_icons|content|img|docs|maps) {
 	root <%= node.biodiv.data %>/..;
 }
 
@@ -61,6 +61,10 @@ location ~ /(wgp_maps) {
 	rewrite (.*) /solr/$1;
 	proxy_pass http://localhost:8080;
 	proxy_redirect default;
+}
+
+location /assets {
+        rewrite  ^/assets/(.*)$ /<%= node.biodiv.appname %>/assets/$1 permanent;
 }
 
 location ~ /(geoserver|solr) {
