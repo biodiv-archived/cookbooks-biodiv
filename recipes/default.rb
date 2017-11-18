@@ -17,65 +17,25 @@
 # limitations under the License.
 #
 
-
-include_recipe "tomcat"
-include_recipe "application"
-
 # setup solr
-include_recipe "solr-tomcat" 
+include_recipe "biodiv::packages"
+include_recipe "solr-tomcat"
 
 # setup geoserver
-include_recipe "geoserver-tomcat" 
+include_recipe "geoserver-tomcat"
 include_recipe "geoserver-tomcat::postgresql"
 
 # setup biodiversity nameparser
 include_recipe "biodiversity-nameparser"
 
-# setup biodiv database 
+# setup biodiv database
 include_recipe "biodiv::database"
 
-# install nginx 
+# install nginx
 include_recipe "nginx"
 
 # setup postfix
 include_recipe "postfix"
-
-# install apt utility packages
-apt_package "imagemagick" do
-  action :install
-end
-
-apt_package "gdal-bin" do
-  action :install
-end
-
-apt_package "libgeoip1" do
-  action :install
-end
-
-apt_package "libgtk2.0" do
-  action :install
-end
-
-apt_package "libproj-dev" do
-  action :install
-end
-
-apt_package "binutils" do
-  action :install
-end
-
-apt_package "jpegoptim" do
-  action :install
-end
-
-apt_package "ntp" do
-  action :install
-end
-
-apt_package "mailutils" do
-  action :install
-end
 
 # create includes folder
 directory "#{node['nginx']['dir']}/include.d/" do
@@ -102,9 +62,9 @@ end
 
 # install grails
 include_recipe "grails-cookbook"
-grailsCmd = "#{node['grails']['install_path']}/bin/grails"
+grailsCmd = "JAVA_HOME=#{node.java.java_home} #{node['grails']['install_path']}/bin/grails"
 biodivRepo = "#{Chef::Config[:file_cache_path]}/biodiv"
-additionalConfig = "#{node.biodiv.extracted}/#{node.biodiv.appname}-additional-config.groovy"
+additionalConfig = "#{node.biodiv.additional_config}"
 
 bash 'cleanup extracted biodiv' do
    code <<-EOH
@@ -128,11 +88,11 @@ bash 'unpack biodiv' do
   unzip  #{node.biodiv.download}
   expectedFolderName=`basename #{node.biodiv.extracted} | sed 's/.zip$//'`
   folderName=`basename #{node.biodiv.download} | sed 's/.zip$//'`
-  
+
   if [ "$folderName" != "$expectedFolderName" ]; then
       mv "$folderName" "$expectedFolderName"
   fi
-  
+
   EOH
   not_if "test -d #{node.biodiv.extracted}"
   notifies :create, "template[#{additionalConfig}]",:immediately
@@ -143,33 +103,26 @@ bash 'copy static files' do
   code <<-EOH
   mkdir -p #{node.biodiv.data}/images
   cp -r #{node.biodiv.extracted}/web-app/images/* #{node.biodiv.data}/images
-  chown -R #{node.tomcat.user}:#{node.tomcat.group} #{node.biodiv.data}
+  chown -R tomcat:tomcat #{node.biodiv.data}
   EOH
   only_if "test -d #{node.biodiv.extracted}"
 end
 
-application node.biodiv.appname do
-    path node.biodiv.home
-    owner node["tomcat"]["user"]
-    group node["tomcat"]["group"]
-    repository node.biodiv.war
-    revision     "HEAD"
-    scm_provider Chef::Provider::File::Deploy
 
-    java_webapp do
-        context_template "biodiv.context.erb"
-    end
-
-    tomcat
+# Setup user/group
+poise_service_user "tomcat user" do
+  user "tomcat"
+  group "tomcat"
+  shell "/bin/bash"
 end
 
 # copy app-conf data
 remote_directory "#{node.biodiv.data}/data" do
   source       "app-conf-data"
-  owner        node.tomcat.user
-  group        node.tomcat.group
-  files_owner  node.tomcat.user
-  files_group  node.tomcat.group
+  owner        "tomcat"
+  group        "tomcat"
+  files_owner  "tomcat"
+  files_group  "tomcat"
   files_backup 0
   files_mode   "644"
   purge        true
@@ -180,11 +133,11 @@ remote_directory "#{node.biodiv.data}/data" do
 end
 
 execute "change-permission-#{node.biodiv.data}" do
-  command "chown -R #{node.tomcat.user}:#{node.tomcat.group} #{node.biodiv.data}"
+  command "chown -R tomcat:tomcat #{node.biodiv.data}"
   user "root"
 end
 
-bash "compile_biodiv" do 
+bash "compile_biodiv" do
   code <<-EOH
   cd #{node.biodiv.extracted}
   yes | #{grailsCmd} upgrade
@@ -201,15 +154,15 @@ end
 bash "copy additional config" do
  code <<-EOH
   mkdir -p /tmp/biodiv-temp/WEB-INF/lib
-  mkdir -p ~#{node.tomcat.user}/.grails
-  cp #{additionalConfig} ~#{node.tomcat.user}/.grails
+  mkdir -p ~tomcat/.grails
+  cp #{additionalConfig} ~tomcat/.grails
   cp #{additionalConfig} /tmp/biodiv-temp/WEB-INF/lib
   cd /tmp/biodiv-temp/
   jar -uvf #{node.biodiv.war}  WEB-INF/lib
   chmod +r #{node.biodiv.war}
   #rm -rf /tmp/biodiv-temp
   EOH
-  notifies :deploy, "application[#{node.biodiv.appname}]", :immediately
+ notifies :enable, "cerner_tomcat[#{node.biodiv.tomcat_instance}]", :immediately
   action :nothing
 end
 
@@ -220,3 +173,26 @@ template additionalConfig do
   notifies :run, "bash[copy additional config]"
 end
 
+cerner_tomcat node.biodiv.tomcat_instance do
+  version "7.0.54"
+  web_app "biodiv" do
+    source "file://#{node.biodiv.war}"
+
+    template "META-INF/context.xml" do
+      source "biodiv.context.erb"
+    end
+  end
+
+  java_settings("-Xms" => "512m",
+                "-D#{node.biodiv.appname}_CONFIG_LOCATION=".upcase => "#{node.biodiv.additional_config}",
+                "-Dlog4jdbc.spylogdelegator.name=" => "net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator",
+                "-Dfile.encoding=" => "UTF-8",
+                "-Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=" => "true",
+                "-Xmx" => "4g",
+                "-XX:PermSize=" => "512m",
+                "-XX:MaxPermSize=" => "512m",
+                "-XX:+UseParNewGC" => "")
+
+  action	:nothing
+  only_if "test -f #{node.biodiv.war}"
+end

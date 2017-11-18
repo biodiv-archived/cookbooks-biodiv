@@ -1,5 +1,3 @@
-include_attribute "tomcat"
-
 expand!
 
 default[:biodiv][:version]   = "master"
@@ -18,3 +16,5 @@ default[:biodiv][:home] = "/usr/local/biodiv"
 # mail server
 default[:biodiv][:smtphost] = "127.0.0.1"
 default[:biodiv][:smtpport] = 25
+default[:biodiv][:tomcat_instance]    = "biodiv"
+default[:biodiv][:additional_config] = "#{biodiv.extracted}/#{node.biodiv.appname}-additional-config.groovy"
