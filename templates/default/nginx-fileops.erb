@@ -1,0 +1,25 @@
+server {
+  listen 80;
+  server_name *.<%= node.fileops.servername %>;
+  return 301 $scheme://<%= node.fileops.servername %>$request_uri;
+}
+
+server {
+	listen   80 default; 
+	server_name <%= node.fileops.servername %> www.<%= node.fileops.servername %>;
+	location ~* ^/Filesutra  {
+        	proxy_pass <%= node.biodiv.servername %>:8080;
+        	proxy_redirect   default;
+        	proxy_set_header   Host $host;
+    	}
+
+        location ~* ^/(.*)$  {
+                rewrite ^/(.*)$ /Filesutra/$1 break;
+                proxy_pass <%= node.biodiv.servername %>:8080;
+                proxy_redirect   default;
+                proxy_set_header   Host $host;
+        }
+
+}
+
+
