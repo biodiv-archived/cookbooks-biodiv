@@ -25,6 +25,9 @@ include_recipe "solr-tomcat"
 include_recipe "geoserver-tomcat"
 include_recipe "geoserver-tomcat::postgresql"
 
+#setup fileops 
+include_recipe "fileops"
+
 # setup biodiversity nameparser
 include_recipe "biodiversity-nameparser"
 
@@ -55,6 +58,14 @@ end
 #  setup nginx main conf
 template "#{node['nginx']['dir']}/sites-enabled/#{node.biodiv.appname}-main.conf" do
   source "nginx-wikwio.erb"
+  owner node.nginx.user
+  group node.nginx.group
+  notifies :restart, resources(:service => "nginx"), :immediately
+end
+
+#  setup nginx main conf
+template "#{node['nginx']['dir']}/sites-enabled/#{node.fileops.appname}-main.conf" do
+  source "nginx-fileops.erb"
   owner node.nginx.user
   group node.nginx.group
   notifies :restart, resources(:service => "nginx"), :immediately
