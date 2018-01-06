@@ -23,7 +23,7 @@ package "libgeoip1" do
   only_if { apt_installed? }
 end
 
-package "libgtk2.0" do
+package "libgtk2.0-0" do
   only_if { apt_installed? }
 end
 
