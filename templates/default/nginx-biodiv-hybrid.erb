@@ -1,0 +1,41 @@
+	
+#####################################################################################
+#####      BIODIV-UI related rules start
+#####################################################################################
+        location ~ /(static|images) {
+                root <%= node.biodiv.data %>/git/biodiv-ui/build;
+        }
+
+
+        location ~ ^/(observation/list|group/.*/observation/list|map|login|logout|group/([a-zA-A0-9_]+)/login|group/([a-zA-A0-9_]+)/logout) {
+                rewrite ^ /index.html break;
+                root <%= node.biodiv.data %>/git/biodiv-ui/build;
+        }
+
+#####################################################################################
+#####      MAP related rules start
+#####################################################################################
+        location /naksha {
+                proxy_pass http://<%= node.biodiv.servername %>:8080/naksha;
+                proxy_redirect   default;
+                proxy_set_header   Host $host;
+        }
+
+
+#####################################################################################
+#####      BIODIV-API related rules start
+#####################################################################################
+
+   location /biodiv-api  {
+        proxy_pass http://<%= node.biodiv.servername %>:8080/biodiv-api;
+        proxy_redirect   default;
+        proxy_set_header   Host $host;
+    }
+
+
+#####################################################################################
+#####      BIODIV-API related rules end
+#####################################################################################
+
+
+
