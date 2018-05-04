@@ -1,13 +1,9 @@
-
-gzip_static on;
-
-
 ## Block download agenta
 if ($http_user_agent ~* LWP::Simple|wget|libwww-perl) {
 	return 403;
 }
 ## Block some nasty robots
-if ($http_user_agent ~ (msnbot|Purebot|Baiduspider|Lipperhey|Mail.Ru|scrapbot|Riddler|riddler|bingbot) ) {
+if ($http_user_agent ~ (msnbot|Purebot|Baiduspider|Lipperhey|Mail.Ru|scrapbot|Riddler|riddler|SemrushBot-SA|SemrushBot|AhrefsBot|BLEXBot|DotBot|coccocbot-web|Exabot|linkdexbot|MJ12bot|MojeekBot|SeznamBot|Uptimebot|YandexAccessibilityBot|YandexBot|YandexMobileBot|Baiduspider-video|Baiduspider-image|sogou|SemrushBot/*|MegaIndex.ru/*|YandexBot/*|Baiduspider/*|DomainCrawler/*|PiplBot|ia_archiver|CCBot/*|Slurp)) {
 	return 403;
 }
 
@@ -37,11 +33,14 @@ location ~ \..*/.*\.php$ {
 	return 403;
 }
 
+location /sites {
+	root <%= node.biodiv.augmentedmaps %>;
+}
+
 # No no for private
 location ~ ^/sites/.*/private/ {
 	return 403;
 }
-
 # Block access to "hidden" files and directories whose names begin with a
 # period. This includes directories used by version control systems such
 # as Subversion or Git to store control files.
@@ -49,31 +48,53 @@ location ~ (^|/)\. {
 	return 403;
 }
 
-location ~* ^/<%= node.biodiv.appname %>/(static/templates|logo|t|observations|newsletters|group-themes|users|userGroups|group_icons|content|img|docs|maps) {
-	root <%= node.biodiv.data %>/..;
+location ~ ^/group_icons {
+        rewrite  ^/group_icons/(.*)$ /<%= node.biodiv.appname %>/group_icons/$1 permanent;
 }
+
+location ~* ^/<%= node.biodiv.appname %>/(static/templates|logo|observations|newsletters|group-themes|users|userGroups|group_icons|content|img|docs|datasources|traits) {
+	root <%= node.biodiv.data %>;
+	expires 30d;
+}
+location = /logo/IBP.png {
+	root <%= node.biodiv.data %>/<%= node.biodiv.appname %>;
+}
+
+
+#CAUSING PROBLEM with proxied content
+#location ~*  \.(jpg|jpeg|png|gif|ico|css|js|pdf)$ {
+#    expires 30d;
+#}
 
 location /<%= node.biodiv.appname %> {
 	rewrite  ^/<%= node.biodiv.appname %>/(.*)$ /$1 permanent;
 }
-
-location ~ /(wgp_maps) {
-	rewrite (.*) /solr/$1;
-	proxy_pass http://localhost:8080;
-	proxy_redirect default;
-}
-
-location /assets {
+location ~ ^/assets {
         rewrite  ^/assets/(.*)$ /<%= node.biodiv.appname %>/assets/$1 permanent;
 }
-
-location ~ /(geoserver|solr) {
-	proxy_pass http://localhost:8080;
-	proxy_redirect default;
+location /ViewerJS {
+        rewrite  ^/ViewerJS/(.*)$ /<%= node.biodiv.appname %>/ViewerJS/$1 permanent;
 }
 
-#access_log      <%= node.nginx.dir %>/logs/<%= node.biodiv.appname %>-access.log;
-#error_log       <%= node.nginx.dir %>/logs/<%= node.biodiv.appname %>-error.log info;
+location /geoserver {
+	proxy_pass http://indiabiodiversity.org:8080/geoserver;
+	proxy_redirect	default;
+	proxy_set_header	Host $host;
+}
+
+#location ~ /(wgp_maps) {
+#	rewrite (.*) /solr/$1;
+#	proxy_pass http://localhost:8080;
+#	proxy_redirect default;
+#}
+
+#location ~ /(solr) {
+#	proxy_pass http://localhost:8080;
+#	proxy_redirect default;
+#}
+
+access_log      <%= node.nginx.dir %>/logs/<%= node.biodiv.appname %>-access.log;
+error_log       <%= node.nginx.dir %>/logs/<%= node.biodiv.appname %>-error.log info;
 rewrite_log on;
 proxy_intercept_errors	on;	
 
@@ -86,46 +107,56 @@ location /map/show {
 }
 
 
-location ~ ^/(biodiversity_news|biodiversity_in_india) {
-	try_files $uri  @rewrite;
-	root <%= node.biodiv.augmentedmaps %>;
-}
+#location ~ ^/(biodiversity_news|biodiversity_in_india) {
+#	try_files $uri  @rewrite;
+#	root <%= node.biodiv.augmentedmaps %>;
+#}
 
-location ~ ^/about/(technology|whats-new)\s*$ {
-	try_files $uri  @rewrite;
+#location ~ ^/about/(technology|whats-new)\s*$ {
+#	try_files $uri  @rewrite;
+#
+#	root <%= node.biodiv.augmentedmaps %>;
+#}
 
-	root <%= node.biodiv.augmentedmaps %>;
-}
-
-location / {
-	try_files $uri  @rewrite;
-
-	root <%= node.biodiv.augmentedmaps %>;
-}
+#location / {
+#	try_files $uri  @rewrite;
+#
+#	root <%= node.biodiv.augmentedmaps %>;
+#}
 
 
-location ~ \.php$ {
-	try_files $uri $uri/ @rewrite;
+#location ~ \.php$ {
+#	try_files $uri $uri/ @rewrite;
 
-	include <%= node.nginx.dir %>/fastcgi_params;
-	root <%= node.biodiv.augmentedmaps %>;
+#	include <%= node.biodiv.data %>/nginx-1.4.7/conf/fastcgi_params;
+#	root <%= node.biodiv.augmentedmaps %>;
 
-	fastcgi_split_path_info ^(.+\.php)(/.+)$;
+#	fastcgi_split_path_info ^(.+\.php)(/.+)$;
 #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
-	fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+#	fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 
-	fastcgi_intercept_errors on;
-	fastcgi_pass 127.0.0.1:9000;
-}
+#	fastcgi_intercept_errors on;
+#	fastcgi_pass 127.0.0.1:9000;
+#}
 
 error_page 404 /404.html;
 location = /404.html {
-	root <%= node.biodiv.data %>;
+	root <%= node.biodiv.data %>/<%= node.biodiv.appname %>;
 }
 
 # redirect server error pages to the static page /50x.html
 #
 error_page 502 503 504 /update_in_progress.html;
 location = /update_in_progress.html {
-	root <%= node.biodiv.data %>;
+	root <%= node.biodiv.data %>/<%= node.biodiv.appname %>;
 }
+
+location = /schema {
+	root <%= node.biodiv.data %>/<%= node.biodiv.appname %>/;
+}
+
+
+proxy_cookie_path /biodiv /;
+
+
+

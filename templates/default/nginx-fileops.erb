@@ -1,11 +1,11 @@
 server {
   listen 80;
   server_name *.<%= node.fileops.servername %>;
-  return 301 $scheme://<%= node.fileops.servername %>$request_uri;
+  return 301 https://<%= node.fileops.servername %>$request_uri;
 }
 
 server {
-	listen   80; 
+	listen   443 ssl; 
 	server_name <%= node.fileops.servername %> www.<%= node.fileops.servername %>;
 	location ~* ^/Filesutra  {
         	proxy_pass http://<%= node.biodiv.servername %>:8080;

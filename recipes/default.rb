@@ -57,6 +57,14 @@ template "#{node['nginx']['dir']}/include.d/#{node.biodiv.appname}" do
   notifies :restart, resources(:service => "nginx"), :immediately
 end
 
+#  setup nginx biodiv-hybrid conf
+template "#{node['nginx']['dir']}/include.d/#{node.biodiv.appname}-hybrid" do
+  source "nginx-biodiv-hybrid.erb"
+  owner node.nginx.user
+  group node.nginx.group
+  notifies :restart, resources(:service => "nginx"), :immediately
+end
+
 #  setup nginx main conf
 template "#{node['nginx']['dir']}/sites-enabled/#{node.biodiv.appname}-main.conf" do
   source "nginx-wikwio.erb"
