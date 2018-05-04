@@ -19,7 +19,9 @@
 
 # setup solr
 include_recipe "biodiv::packages"
-include_recipe "solr-tomcat"
+#include_recipe "solr-tomcat"
+include_recipe "elasticsearch"
+include_recipe "redis::install_from_package"
 
 # setup geoserver
 include_recipe "geoserver-tomcat"
@@ -27,6 +29,7 @@ include_recipe "geoserver-tomcat::postgresql"
 
 #setup fileops 
 include_recipe "fileops"
+include_recipe "biodiv-api"
 
 # setup biodiversity nameparser
 include_recipe "biodiversity-nameparser"
@@ -196,6 +199,7 @@ cerner_tomcat node.biodiv.tomcat_instance do
 
   java_settings("-Xms" => "512m",
                 "-D#{node.biodiv.appname}_CONFIG_LOCATION=".upcase => "#{node.biodiv.additional_config}",
+                "-D#{node.biodivApi.appname}_CONFIG_LOCATION=".upcase => "#{node.biodivApi.additional_config}",
                 "-D#{node.fileops.appname}_CONFIG=".upcase => "#{node.fileops.additional_config}",
                 "-Dlog4jdbc.spylogdelegator.name=" => "net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator",
                 "-Dfile.encoding=" => "UTF-8",
