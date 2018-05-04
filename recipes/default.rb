@@ -29,7 +29,6 @@ include_recipe "geoserver-tomcat::postgresql"
 
 #setup fileops 
 include_recipe "fileops"
-include_recipe "biodiv-api"
 
 # setup biodiversity nameparser
 include_recipe "biodiversity-nameparser"
