@@ -2,7 +2,7 @@
 #####################################################################################
 #####      BIODIV-UI related rules start
 #####################################################################################
-        location ~ /(static|images) {
+        location ~ /(static|images|headerStyles) {
                 root <%= node.biodiv.data %>/git/biodiv-ui/build;
         }
 
