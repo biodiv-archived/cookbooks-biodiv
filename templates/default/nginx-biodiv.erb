@@ -93,8 +93,8 @@ location /geoserver {
 #	proxy_redirect default;
 #}
 
-access_log      <%= node.nginx.dir %>/logs/<%= node.biodiv.appname %>-access.log;
-error_log       <%= node.nginx.dir %>/logs/<%= node.biodiv.appname %>-error.log info;
+#access_log      <%= node.nginx.dir %>/logs/<%= node.biodiv.appname %>-access.log;
+#error_log       <%= node.nginx.dir %>/logs/<%= node.biodiv.appname %>-error.log info;
 rewrite_log on;
 proxy_intercept_errors	on;	
 
