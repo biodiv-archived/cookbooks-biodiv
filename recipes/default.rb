@@ -194,6 +194,23 @@ template additionalConfig do
   notifies :run, "bash[copy additional config]"
 end
 
+
+bash "copy redisson" do
+ code <<-EOH
+  cp #{redisson} #{node.biodiv.data}
+  EOH
+ notifies :enable, "cerner_tomcat[#{node.biodiv.tomcat_instance}]", :immediately
+  action :nothing
+end
+
+#  create redisson.yaml
+template redisson do
+  source "redisson.yaml.erb"
+  notifies :run, "bash[copy redisson]"
+end
+
+
+
 cerner_tomcat node.biodiv.tomcat_instance do
   version "7.0.54"
   web_app "biodiv" do
