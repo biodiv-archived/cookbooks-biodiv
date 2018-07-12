@@ -86,11 +86,13 @@ include_recipe "grails-cookbook"
 grailsCmd = "JAVA_HOME=#{node.java.java_home} #{node['grails']['install_path']}/bin/grails"
 biodivRepo = "#{Chef::Config[:file_cache_path]}/biodiv"
 additionalConfig = "#{node.biodiv.additional_config}"
+redisson = "#{node.biodiv.data}/redisson.yaml"
 
 bash 'cleanup extracted biodiv' do
    code <<-EOH
    rm -rf #{node.biodiv.extracted}
    rm -f #{additionalConfig}
+   rm -f #{redisson}
    EOH
    action :nothing
    notifies :run, 'bash[unpack biodiv]'
@@ -117,6 +119,7 @@ bash 'unpack biodiv' do
   EOH
   not_if "test -d #{node.biodiv.extracted}"
   notifies :create, "template[#{additionalConfig}]",:immediately
+  notifies :create, "template[#{redisson}]",:immediately
   notifies :run, "bash[copy static files]",:immediately
 end
 
@@ -169,6 +172,7 @@ bash "compile_biodiv" do
 
   not_if "test -f #{node.biodiv.war}"
   only_if "test -f #{additionalConfig}"
+  only_if "test -f #{redisson}"
   notifies :run, "bash[copy additional config]", :immediately
 end
 
@@ -194,19 +198,9 @@ template additionalConfig do
   notifies :run, "bash[copy additional config]"
 end
 
-
-bash "copy redisson" do
- code <<-EOH
-  cp #{redisson} #{node.biodiv.data}
-  EOH
- notifies :enable, "cerner_tomcat[#{node.biodiv.tomcat_instance}]", :immediately
-  action :nothing
-end
-
 #  create redisson.yaml
 template redisson do
   source "redisson.yaml.erb"
-  notifies :run, "bash[copy redisson]"
 end
 
 
