@@ -12,6 +12,19 @@ default[:biodiv][:download]  = "#{biodiv.directory}/#{biodiv.repository}-#{biodi
 
 default[:biodiv][:home] = "/usr/local/biodiv"
 
+default[:biodivApi][:version]   = "master"
+default[:biodivApi][:appname]   = "biodiv-api"
+default[:biodivApi][:repository]   = "biodiv-api"
+default[:biodivApi][:directory] = "/usr/local/src"
+
+default[:biodivApi][:link]      = "https://codeload.github.com/strandls/#{biodivApi.repository}/zip/#{biodivApi.version}"
+default[:biodivApi][:extracted] = "#{biodivApi.directory}/#{biodivApi.appname}-#{biodivApi.version}"
+default[:biodivApi][:war]       = "#{biodivApi.extracted}/build/libs/#{biodivApi.appname}.war"
+default[:biodivApi][:download]  = "#{biodivApi.directory}/#{biodivApi.repository}-#{biodivApi.version}.zip"
+
+default[:biodivApi][:home] = "/usr/local/biodivApi"
+
+default[:biodivApi][:additional_config] = "#{biodivApi.extracted}/#{biodivApi.appname}.properties"
 
 # mail server
 default[:biodiv][:smtphost] = "127.0.0.1"
