@@ -36,8 +36,8 @@ server {
 	include <%= node.nginx.dir %>/include.d/<%= node.biodiv.appname %>;
 
 	ssl on;
-	ssl_certificate <%=node.biodiv.ssl_certificate%>
-	ssl_certificate_key <%=node.biodiv.ssl_certificate_key%>
+	ssl_certificate <%=node.biodiv.ssl_certificate%>;
+	ssl_certificate_key <%=node.biodiv.ssl_certificate_key%>;
 
 #	for home page
 	location = / {
