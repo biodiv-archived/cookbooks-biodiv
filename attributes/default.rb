@@ -14,6 +14,7 @@ default[:biodiv][:home] = "/usr/local/biodiv"
 
 default[:biodivApi][:version]   = "master"
 default[:biodivApi][:appname]   = "biodiv-api"
+default[:biodivApi][:configname]   = "BIODIV_API_CONFIG"
 default[:biodivApi][:repository]   = "biodiv-api"
 default[:biodivApi][:directory] = "/usr/local/src"
 
