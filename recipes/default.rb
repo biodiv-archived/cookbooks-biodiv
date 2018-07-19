@@ -206,7 +206,7 @@ end
 
 
 cerner_tomcat node.biodiv.tomcat_instance do
-  version "7.0.54"
+  version "8.5.27"
   web_app "biodiv" do
     source "file://#{node.biodiv.war}"
 
