@@ -53,11 +53,11 @@ location ~ ^/group_icons {
 }
 
 location ~* ^/<%= node.biodiv.appname %>/(static/templates|logo|observations|newsletters|group-themes|users|userGroups|group_icons|content|img|docs|datasources|traits) {
-	root <%= node.biodiv.data %>;
+	root /apps;
 	expires 30d;
 }
 location = /logo/IBP.png {
-	root <%= node.biodiv.data %>/<%= node.biodiv.appname %>;
+	root <%= node.biodiv.data %>;
 }
 
 
@@ -77,7 +77,7 @@ location /ViewerJS {
 }
 
 location /geoserver {
-	proxy_pass http://indiabiodiversity.org:8080/geoserver;
+	proxy_pass http://<%= node.biodiv.servername %>:8080/geoserver;
 	proxy_redirect	default;
 	proxy_set_header	Host $host;
 }
