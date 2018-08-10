@@ -9,7 +9,7 @@
 
         location ~ ^/(observation/list|group/.*/observation/list|map|login|logout|group/([a-zA-A0-9_]+)/login|group/([a-zA-A0-9_]+)/logout) {
                 rewrite ^ /index.html break;
-                root <%= node.biodivUi.build %>
+                root <%= node.biodivUi.build %>;
         }
 
 #####################################################################################
